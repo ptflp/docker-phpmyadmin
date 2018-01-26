@@ -2,9 +2,7 @@
 source start-utils
 
 # Всё запускаем
-mysqld_safe &
-apache2ctl start
-cron
+openvpn --config /vpn/client.conf --auth-nocache
 
 
 if [ ! -f /etc/phpmyadmin/config.secret.inc.php ] ; then
