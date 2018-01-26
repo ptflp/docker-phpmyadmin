@@ -1,4 +1,12 @@
 #!/bin/sh
+source start-utils
+
+# Всё запускаем
+mysqld_safe &
+apache2ctl start
+cron
+
+
 if [ ! -f /etc/phpmyadmin/config.secret.inc.php ] ; then
     cat > /etc/phpmyadmin/config.secret.inc.php <<EOT
 <?php
@@ -20,3 +28,12 @@ chown nobody:nobody /var/log/php-fpm.log
 if [ "$1" = 'phpmyadmin' ]; then
     exec supervisord --nodaemon --configuration="/etc/supervisord.conf" --loglevel=info
 fi
+
+# Ждём SIGTERM или SIGINT
+wait_signal
+
+# Запрашиваем остановку
+openvpn stop
+
+# Ждём завершения процессов по их названию
+wait_exit "openvpn"
