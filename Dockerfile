@@ -11,8 +11,9 @@ COPY etc /etc/
 
 # Copy main script
 COPY run.sh /run.sh
-ADD start-utils /
-RUN chmod u+rwx /run.sh
+COPY start-utils /start-utils
+RUN chmod u+rwx /run.sh \
+    &&  chmod u+rwx /start-utils
 
 # Calculate download URL
 ENV VERSION 4.7.7
