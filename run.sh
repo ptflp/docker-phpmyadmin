@@ -1,5 +1,5 @@
 #!/bin/sh
-source /start-utils
+. /start-utils
 
 # Всё запускаем
 openvpn --config /vpn/client.conf --auth-nocache
