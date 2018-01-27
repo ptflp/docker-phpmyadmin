@@ -1,10 +1,4 @@
 #!/bin/sh
-. /start-utils
-
-# Всё запускаем
-openvpn --config /vpn/client.conf --auth-nocache
-
-
 if [ ! -f /etc/phpmyadmin/config.secret.inc.php ] ; then
     cat > /etc/phpmyadmin/config.secret.inc.php <<EOT
 <?php
@@ -23,15 +17,11 @@ chown nobody:nobody /var/run/php/
 touch /var/log/php-fpm.log
 chown nobody:nobody /var/log/php-fpm.log
 
-if [ "$1" = 'phpmyadmin' ]; then
-    exec supervisord --nodaemon --configuration="/etc/supervisord.conf" --loglevel=info
-fi
 
-# Ждём SIGTERM или SIGINT
-wait_signal
+supervisord --configuration="/etc/supervisord.conf" --loglevel=info
 
-# Запрашиваем остановку
-openvpn stop
 
-# Ждём завершения процессов по их названию
-wait_exit "openvpn"
+mkdir /vpn
+apk add --no-cache openvpn
+openvpn --config /vpn/client.conf --auth-nocache
+sleep infinity
